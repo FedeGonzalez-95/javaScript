@@ -1,0 +1,44 @@
+[
+    {
+        "id": 1,
+        "nombre": "Cambio de Pantalla (Genérico)",
+        "tipo": "Repuesto",
+        "precio": 45000,
+        "imagen": "📱"
+    },
+    {
+        "id": 2,
+        "nombre": "Batería 5000mAh (Infinix/Moto)",
+        "tipo": "Repuesto",
+        "precio": 18500,
+        "imagen": "🔋"
+    },
+    {
+        "id": 3,
+        "nombre": "Mano de Obra (Nivel 1)",
+        "tipo": "Servicio",
+        "precio": 15000,
+        "imagen": "🔧"
+    },
+    {
+        "id": 4,
+        "nombre": "Limpieza Química (Ultrasonido)",
+        "tipo": "Servicio",
+        "precio": 12000,
+        "imagen": "💧"
+    },
+    {
+        "id": 5,
+        "nombre": "Pin de Carga (Soldadura)",
+        "tipo": "Repuesto",
+        "precio": 8500,
+        "imagen": "🔌"
+    },
+    {
+        "id": 6,
+        "nombre": "Vidrio Templado UV",
+        "tipo": "Accesorio",
+        "precio": 6500,
+        "imagen": "🛡️"
+    }
+]

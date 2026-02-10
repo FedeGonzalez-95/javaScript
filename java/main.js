@@ -1,104 +1,176 @@
-// Array de productos estáticos
-const productos = [
-    { id: 1, nombre: 'Laptop', precio: 1000, stock: 5 },
-    { id: 2, nombre: 'Mouse', precio: 20, stock: 10 },
-    { id: 3, nombre: 'Teclado', precio: 50, stock: 8 }
-];
+/**
+ * PROYECTO FINAL: Simulador de Cotizaciones Técnicas
+ * Autor: Fede
+ * Descripción: Carga productos desde JSON, permite armar un carrito y simular una orden.
+ */
 
-// Carrito como array de objetos
+// --- VARIABLES GLOBALES Y SELECTORES DOM ---
+let inventario = [];
 let carrito = [];
 
-// Cargar productos desde localStorage al iniciar
-function cargarCarritoDesdeStorage() {
-    const carritoGuardado = localStorage.getItem('carrito');
-    if (carritoGuardado) {
-        carrito = JSON.parse(carritoGuardado);
-        actualizarCarritoDOM();
+const contenedorProductos = document.getElementById('contenedor-productos');
+const carritoItemsContainer = document.getElementById('carrito-items');
+const precioTotalElement = document.getElementById('precio-total');
+const formulario = document.getElementById('form-presupuesto');
+
+// --- 1. CARGA DE DATOS (Fetch & Async/Await) ---
+// Cumple con: "Utilizar datos remotos y carga asíncrona"
+document.addEventListener('DOMContentLoaded', () => {
+    fetchData();
+});
+
+const fetchData = async () => {
+    try {
+        const response = await fetch('data.json');
+        if (!response.ok) throw new Error('Error en la conexión');
+        inventario = await response.json();
+        renderizarProductos(inventario);
+    } catch (error) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error de Sistema',
+            text: 'No se pudo cargar el inventario. Intente más tarde.',
+        });
     }
-}
+};
 
-// Guardar carrito en localStorage
-function guardarCarritoEnStorage() {
-    localStorage.setItem('carrito', JSON.stringify(carrito));
-}
-
-// Renderizar productos en el DOM
-function renderizarProductos() {
-    const listaProductos = document.getElementById('lista-productos');
-    listaProductos.innerHTML = ''; // Limpiar contenido anterior
+// --- 2. RENDERIZADO (DOM) ---
+// Cumple con: "HTML interactivo generado desde JS"
+function renderizarProductos(productos) {
+    contenedorProductos.innerHTML = '';
+    
     productos.forEach(producto => {
-        const divProducto = document.createElement('div');
-        divProducto.classList.add('producto');
-        divProducto.innerHTML = `
-            <h3>${producto.nombre}</h3>
-            <p>Precio: $${producto.precio}</p>
-            <p>Stock: ${producto.stock}</p>
-            <button data-id="${producto.id}">Agregar al Carrito</button>
+        const div = document.createElement('div');
+        div.classList.add('col-md-4', 'col-sm-6');
+        
+        div.innerHTML = `
+            <div class="card h-100 producto-card">
+                <div class="card-img-top-placeholder text-secondary">
+                    ${producto.imagen}
+                </div>
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">${producto.nombre}</h5>
+                    <p class="card-text text-muted small">${producto.tipo}</p>
+                    <h6 class="mt-auto text-primary">$${producto.precio.toLocaleString()}</h6>
+                    <button class="btn btn-outline-primary mt-2" onclick="agregarAlCarrito(${producto.id})">
+                        Agregar +
+                    </button>
+                </div>
+            </div>
         `;
-        listaProductos.appendChild(divProducto);
+        contenedorProductos.appendChild(div);
     });
 }
 
-// Agregar producto al carrito
-function agregarAlCarrito(idProducto) {
-    const producto = productos.find(p => p.id === parseInt(idProducto));
-    if (!producto || producto.stock <= 0) {
-        alert('Producto no disponible o sin stock.');
+// --- 3. LÓGICA DE NEGOCIO (Carrito) ---
+// Cumple con: "Uso de arrays, objetos y métodos (find, push, filter, reduce)"
+
+window.agregarAlCarrito = (id) => {
+    const productoEncontrado = inventario.find(item => item.id === id);
+    
+    if (productoEncontrado) {
+        carrito.push(productoEncontrado);
+        actualizarCarritoUI();
+        
+        // Notificación con Toastify (Reemplaza alert)
+        Toastify({
+            text: `Agregado: ${productoEncontrado.nombre}`,
+            duration: 2000,
+            gravity: "bottom",
+            position: "right",
+            style: {
+                background: "linear-gradient(to right, #00b09b, #96c93d)",
+            }
+        }).showToast();
+    }
+};
+
+window.eliminarDelCarrito = (index) => {
+    // Eliminamos por índice para permitir duplicados si el usuario quiere
+    carrito.splice(index, 1);
+    actualizarCarritoUI();
+    
+    Toastify({
+        text: "Item eliminado",
+        duration: 2000,
+        gravity: "bottom",
+        position: "right",
+        style: {
+            background: "#dc3545",
+        }
+    }).showToast();
+};
+
+function actualizarCarritoUI() {
+    // Limpiar HTML
+    carritoItemsContainer.innerHTML = '';
+
+    if (carrito.length === 0) {
+        carritoItemsContainer.innerHTML = '<li class="list-group-item text-center text-muted">El presupuesto está vacío.</li>';
+        precioTotalElement.innerText = '0';
         return;
     }
-    const itemEnCarrito = carrito.find(item => item.id === producto.id);
-    if (itemEnCarrito) {
-        itemEnCarrito.cantidad++;
-    } else {
-        carrito.push({ id: producto.id, nombre: producto.nombre, precio: producto.precio, cantidad: 1 });
+
+    // Generar items del carrito
+    carrito.forEach((item, index) => {
+        const li = document.createElement('li');
+        li.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-center');
+        li.innerHTML = `
+            <div class="ms-2 me-auto">
+                <div class="fw-bold" style="font-size: 0.9rem;">${item.nombre}</div>
+                <span class="badge bg-secondary rounded-pill">$${item.precio}</span>
+            </div>
+            <button class="btn btn-sm btn-link text-secondary btn-eliminar" onclick="eliminarDelCarrito(${index})">
+                <i class="bi bi-trash">X</i>
+            </button>
+        `;
+        carritoItemsContainer.appendChild(li);
+    });
+
+    // Calcular Total con reduce()
+    const total = carrito.reduce((acc, item) => acc + item.precio, 0);
+    precioTotalElement.innerText = total.toLocaleString();
+}
+
+// --- 4. INTERACCIÓN FINAL (Formulario) ---
+// Cumple con: "Captura de eventos y validación"
+
+formulario.addEventListener('submit', (e) => {
+    e.preventDefault(); // Evita recarga de página
+
+    if (carrito.length === 0) {
+        Swal.fire({
+            title: 'Carrito Vacío',
+            text: 'Debes agregar repuestos o servicios antes de generar la orden.',
+            icon: 'warning',
+            confirmButtonText: 'Entendido'
+        });
+        return;
     }
-    producto.stock--; // Reducir stock
-    guardarCarritoEnStorage();
-    actualizarCarritoDOM();
-}
 
-// Actualizar el carrito en el DOM
-function actualizarCarritoDOM() {
-    const listaCarrito = document.getElementById('lista-carrito');
-    const totalSpan = document.getElementById('total');
-    listaCarrito.innerHTML = ''; // Limpiar
-    let total = 0;
-    carrito.forEach(item => {
-        const divItem = document.createElement('div');
-        divItem.innerHTML = `<p>${item.nombre} - Cantidad: ${item.cantidad} - Subtotal: $${item.precio * item.cantidad}</p>`;
-        listaCarrito.appendChild(divItem);
-        total += item.precio * item.cantidad;
-    });
-    totalSpan.textContent = total;
-}
+    const nombreCliente = document.getElementById('cliente').value;
+    const sucursal = document.getElementById('sucursal').value;
+    const totalFinal = document.getElementById('precio-total').innerText;
 
-// Vaciar carrito
-function vaciarCarrito() {
-    carrito = [];
-    // Restaurar stock
-    productos.forEach(p => {
-        if (p.id === 1) p.stock = 5;
-        if (p.id === 2) p.stock = 10;
-        if (p.id === 3) p.stock = 8;
-    });
-    guardarCarritoEnStorage();
-    actualizarCarritoDOM();
-    renderizarProductos(); // Actualizar stock
-}
-
-// Delegación para botones dinámicos
-document.addEventListener('DOMContentLoaded', () => {
-    renderizarProductos();
-    cargarCarritoDesdeStorage();
-
-    // Agregar productos
-    document.getElementById('lista-productos').addEventListener('click', (e) => {
-        if (e.target.tagName === 'BUTTON') {
-            const idProducto = e.target.getAttribute('data-id');
-            agregarAlCarrito(idProducto);
+    // Simulación de proceso exitoso con SweetAlert2
+    Swal.fire({
+        title: '¡Orden Generada!',
+        html: `
+            <p>Cliente: <strong>${nombreCliente}</strong></p>
+            <p>Sucursal: ${sucursal}</p>
+            <p class="fs-4">Total a cobrar: <strong>$${totalFinal}</strong></p>
+        `,
+        icon: 'success',
+        confirmButtonText: 'Imprimir Comprobante'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Reiniciar el simulador
+            carrito = [];
+            actualizarCarritoUI();
+            formulario.reset();
+            // Restaurar valor por defecto del técnico tras el reset
+            document.getElementById('tecnico').value = "Fede";
+            document.getElementById('sucursal').value = "Villa Carlos Paz, Córdoba";
         }
     });
-
-    // Vaciar carrito
-    document.getElementById('vaciar-carrito').addEventListener('click', vaciarCarrito);
 });
