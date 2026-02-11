@@ -1,9 +1,3 @@
-/**
- * PROYECTO FINAL: Simulador de Cotizaciones Técnicas
- * Autor: Fede
- * Descripción: Carga productos desde JSON, permite armar un carrito y simular una orden.
- */
-
 // --- VARIABLES GLOBALES Y SELECTORES DOM ---
 let inventario = [];
 let carrito = [];
@@ -14,7 +8,6 @@ const precioTotalElement = document.getElementById('precio-total');
 const formulario = document.getElementById('form-presupuesto');
 
 // --- 1. CARGA DE DATOS (Fetch & Async/Await) ---
-// Cumple con: "Utilizar datos remotos y carga asíncrona"
 document.addEventListener('DOMContentLoaded', () => {
     fetchData();
 });
@@ -35,14 +28,13 @@ const fetchData = async () => {
 };
 
 // --- 2. RENDERIZADO (DOM) ---
-// Cumple con: "HTML interactivo generado desde JS"
 function renderizarProductos(productos) {
     contenedorProductos.innerHTML = '';
-    
+
     productos.forEach(producto => {
         const div = document.createElement('div');
         div.classList.add('col-md-4', 'col-sm-6');
-        
+
         div.innerHTML = `
             <div class="card h-100 producto-card">
                 <div class="card-img-top-placeholder text-secondary">
@@ -63,15 +55,14 @@ function renderizarProductos(productos) {
 }
 
 // --- 3. LÓGICA DE NEGOCIO (Carrito) ---
-// Cumple con: "Uso de arrays, objetos y métodos (find, push, filter, reduce)"
 
 window.agregarAlCarrito = (id) => {
     const productoEncontrado = inventario.find(item => item.id === id);
-    
+
     if (productoEncontrado) {
         carrito.push(productoEncontrado);
         actualizarCarritoUI();
-        
+
         // Notificación con Toastify (Reemplaza alert)
         Toastify({
             text: `Agregado: ${productoEncontrado.nombre}`,
@@ -86,10 +77,9 @@ window.agregarAlCarrito = (id) => {
 };
 
 window.eliminarDelCarrito = (index) => {
-    // Eliminamos por índice para permitir duplicados si el usuario quiere
     carrito.splice(index, 1);
     actualizarCarritoUI();
-    
+
     Toastify({
         text: "Item eliminado",
         duration: 2000,
@@ -133,7 +123,6 @@ function actualizarCarritoUI() {
 }
 
 // --- 4. INTERACCIÓN FINAL (Formulario) ---
-// Cumple con: "Captura de eventos y validación"
 
 formulario.addEventListener('submit', (e) => {
     e.preventDefault(); // Evita recarga de página

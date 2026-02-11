@@ -1,119 +1,58 @@
-/*
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    margin: 0;
-    padding: 20px;
-}
-
-.container {
-    max-width: 800px;
-    margin: 0 auto;
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-}
-
-h1, h2 {
-    text-align: center;
-    color: #333;
-}
-
-#converter {
-    margin-bottom: 30px;
-}
-
-select, input, button {
-    display: block;
-    width: 100%;
-    margin: 10px 0;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
-
-button {
-    background-color: #007bff;
-    color: white;
-    cursor: pointer;
-}
-
-button:hover {
-    background-color: #0056b3;
-}
-
-#result {
-    margin-top: 20px;
-    padding: 10px;
-    background-color: #e9ecef;
-    border-radius: 4px;
-    text-align: center;
-}
-
-#historyList {
-    list-style: none;
-    padding: 0;
-}
-
-#historyList li {
-    padding: 5px;
-    border-bottom: 1px solid #ddd;
-}
-    */
-
     /* Variables CSS */
-:root {
-    --primary-color: #0d6efd;
-    --hover-bg: #e9ecef;
-}
+    :root {
+        --primary-color: #0d6efd;
+        --hover-bg: #e9ecef;
+    }
 
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
 
-/* Efecto Hover en las tarjetas de productos */
-.producto-card {
-    transition: transform 0.2s ease-in-out, box-shadow 0.2s;
-    border: 1px solid rgba(0,0,0,0.1);
-    cursor: default;
-}
+    /* Efecto Hover en las tarjetas de productos */
+    .producto-card {
+        transition: transform 0.2s ease-in-out, box-shadow 0.2s;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        cursor: default;
+    }
 
-.producto-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-    border-color: var(--primary-color);
-}
+    .producto-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        border-color: var(--primary-color);
+    }
 
-.card-img-top-placeholder {
-    font-size: 3rem;
-    background-color: var(--hover-bg);
-    height: 120px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
+    .card-img-top-placeholder {
+        font-size: 3rem;
+        background-color: var(--hover-bg);
+        height: 120px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
 
-/* Estilos para el carrito */
-#carrito-items {
-    max-height: 250px;
-    overflow-y: auto;
-    scrollbar-width: thin;
-}
+    /* Estilos para el carrito */
+    #carrito-items {
+        max-height: 250px;
+        overflow-y: auto;
+        scrollbar-width: thin;
+    }
 
-/* Scrollbar personalizado */
-#carrito-items::-webkit-scrollbar {
-    width: 6px;
-}
-#carrito-items::-webkit-scrollbar-thumb {
-    background-color: #ccc;
-    border-radius: 4px;
-}
+    /* Scrollbar personalizado */
+    #carrito-items::-webkit-scrollbar {
+        width: 6px;
+    }
 
-/* Animación del botón de eliminar */
-.btn-eliminar {
-    transition: color 0.2s;
-}
-.btn-eliminar:hover {
-    color: #dc3545 !important; /* Rojo Bootstrap */
-}
+    #carrito-items::-webkit-scrollbar-thumb {
+        background-color: #ccc;
+        border-radius: 4px;
+    }
+
+    /* Animación del botón de eliminar */
+    .btn-eliminar {
+        transition: color 0.2s;
+    }
+
+    .btn-eliminar:hover {
+        color: #dc3545 !important;
+        /* Rojo Bootstrap */
+    }
